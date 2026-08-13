@@ -1,0 +1,74 @@
+/* ============ 蓝色系主题变量（OKLCH） ============ */
+:root {
+  --ink: oklch(32% 0.05 250);
+  --ink-soft: oklch(47% 0.04 250);
+  --cream: oklch(96.5% 0.015 250);
+  --cream-deep: oklch(92% 0.02 250);
+  --accent: oklch(60% 0.15 255);
+  --accent-soft: oklch(86% 0.06 255);
+  --accent-deep: oklch(50% 0.17 258);
+  --glass: rgba(255, 255, 255, 0.55);
+  --glass-border: rgba(255, 255, 255, 0.75);
+  --shadow: 0 20px 60px rgba(30, 50, 110, 0.18);
+  --radius-lg: 28px;
+  --radius-md: 20px;
+  --font-serif: "Noto Serif SC", "Songti SC", "STSong", "SimSun", serif;
+  --font-sans: "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+
+  /* 旧变量名别名（兼容既有组件，指向蓝色系） */
+  --terracotta: var(--accent-deep);
+  --gold: var(--accent);
+  --gold-soft: var(--accent-soft);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-sans);
+  color: var(--ink);
+  background: var(--cream);
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(120, 170, 255, 0.25), transparent 40%),
+    radial-gradient(circle at 85% 10%, rgba(70, 110, 220, 0.14), transparent 35%),
+    radial-gradient(circle at 70% 90%, rgba(90, 145, 225, 0.18), transparent 40%);
+  overflow-x: hidden;
+}
+
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 0 28px; }
+
+/* ============ 通用区块标题（居中） ============ */
+.sec-head {
+  text-align: center;
+  margin-bottom: 48px;
+}
+.sec-head .tag {
+  font-size: 13px;
+  letter-spacing: 4px;
+  color: var(--accent-deep);
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+.sec-head h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(28px, 4vw, 42px);
+  color: var(--ink);
+}
+.sec-head .line {
+  width: 56px; height: 3px;
+  margin: 18px auto 0;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent-soft), var(--accent-deep));
+}
+
+/* ============ 响应式 ============ */
+@media (max-width: 920px) {
+  .grid--3 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 640px) {
+  .grid--3 { grid-template-columns: 1fr; }
+  .wrap { padding: 0 18px; }
+}

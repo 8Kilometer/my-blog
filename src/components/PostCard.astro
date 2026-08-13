@@ -1,0 +1,89 @@
+---
+interface Props {
+  title: string;
+  pubDate: Date;
+  description: string;
+  category: string;
+  coverImage?: string;
+  href: string;
+}
+
+const { title, pubDate, description, category, coverImage, href } = Astro.props;
+const dateStr = pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: '2-digit', day: '2-digit' }).replace(/\//g, '.');
+---
+
+<a class="post" href={href}>
+  <div class="post-thumb">
+    {coverImage
+      ? <img src={coverImage} alt={title} loading="lazy" />
+      : <div class="post-thumb-empty">🎨</div>
+    }
+  </div>
+  <div class="post-body">
+    <div class="post-meta">
+      <span class="cat">{category}</span>
+      <span class="date">{dateStr}</span>
+    </div>
+    <h3>{title}</h3>
+    <p>{description}</p>
+    <span class="more">阅读全文 →</span>
+  </div>
+</a>
+
+<style>
+  .post {
+    border-radius: var(--radius-lg);
+    background: var(--glass);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+  }
+  .post:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 30px 70px rgba(70, 48, 20, 0.26);
+  }
+  .post-thumb {
+    height: 220px;
+    overflow: hidden;
+  }
+  .post-thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s ease;
+  }
+  .post:hover .post-thumb img { transform: scale(1.08); }
+  .post-thumb-empty {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px;
+    background: linear-gradient(135deg, var(--gold-soft), var(--cream-deep));
+  }
+  .post-body { padding: 24px 24px 26px; display: flex; flex-direction: column; gap: 12px; flex: 1; }
+  .post-meta {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 12px; letter-spacing: 1px;
+  }
+  .post-meta .cat { color: var(--terracotta); }
+  .post-meta .date { color: var(--ink-soft); }
+  .post h3 {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    line-height: 1.5;
+    color: var(--ink);
+  }
+  .post p {
+    font-size: 14px; line-height: 1.8;
+    color: var(--ink-soft);
+    flex: 1;
+  }
+  .post .more {
+    font-size: 13px;
+    color: var(--terracotta);
+    letter-spacing: 1px;
+  }
+</style>

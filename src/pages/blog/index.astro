@@ -1,0 +1,84 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GlassNav from '../../components/GlassNav.astro';
+import PostCard from '../../components/PostCard.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// 按分类分组
+const categories = [...new Set(posts.map((p) => p.data.category))];
+---
+
+<BaseLayout title="全部文章" description="所有笔触">
+  <GlassNav />
+  <main style="padding-top:120px;">
+    <section>
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="tag">All Strokes</div>
+          <h2>全部文章</h2>
+          <div class="line"></div>
+        </div>
+
+        <!-- 分类标签 -->
+        <div class="cats">
+          <a href="#posts" class="chip active">全部 <em>{posts.length}</em></a>
+          {categories.map((c) => (
+            <span class="chip">{c}</span>
+          ))}
+        </div>
+
+        <div class="grid grid--3" id="posts">
+          {posts.map((post) => (
+            <PostCard
+              title={post.data.title}
+              pubDate={post.data.pubDate}
+              description={post.data.description}
+              category={post.data.category}
+              coverImage={post.data.coverImage}
+              href={`/blog/${post.slug}/`}
+            />
+          ))}
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  section { padding: 24px 0 96px; }
+  .grid--3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .cats {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 44px;
+  }
+  .chip {
+    padding: 9px 18px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255,255,255,0.7);
+    font-size: 13px;
+    color: var(--ink-soft);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    transition: background 0.25s, color 0.25s;
+  }
+  .chip em { font-style: normal; opacity: 0.6; margin-left: 2px; }
+  .chip.active {
+    background: var(--terracotta);
+    color: #f4f8ff;
+    border-color: transparent;
+  }
+</style>

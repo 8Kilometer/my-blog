@@ -1,0 +1,149 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import GlassNav from '../../components/GlassNav.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('blog')).filter((p) => !p.data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, description, pubDate, category, tags } = post.data;
+const dateStr = pubDate.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<BaseLayout title={title} description={description}>
+  <GlassNav />
+  <main style="padding-top:140px;">
+    <article class="wrap article">
+      <div class="article-head reveal">
+        <div class="breadcrumb"><a href="/">首页</a> / <a href="/blog">文章</a> / <span>{category}</span></div>
+        <h1>{title}</h1>
+        <div class="meta">
+          <span>{dateStr}</span>
+          {tags.length > 0 && <span class="tags">{tags.map((t) => `#${t}`).join(' ')}</span>}
+        </div>
+        <div class="line"></div>
+      </div>
+
+      <div class="article-body">
+        <Content />
+      </div>
+
+      <div class="article-foot">
+        <a class="btn btn-ghost" href="/blog">← 返回全部文章</a>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .article { max-width: 780px; }
+  .article-head { margin-bottom: 44px; }
+  .breadcrumb { font-size: 13px; color: var(--ink-soft); letter-spacing: 1px; margin-bottom: 16px; }
+  .breadcrumb a:hover { color: var(--terracotta); }
+  .breadcrumb span { color: var(--terracotta); }
+  .article-head h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(28px, 4vw, 42px);
+    line-height: 1.35;
+    color: var(--ink);
+    margin-bottom: 16px;
+  }
+  .meta {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .meta .tags { color: var(--terracotta); letter-spacing: 1px; }
+  .article-head .line {
+    width: 56px; height: 3px;
+    margin-top: 20px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, var(--gold), var(--terracotta));
+  }
+
+  /* 正文排版 */
+  .article-body {
+    font-size: 16px;
+    line-height: 2;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(14px) saturate(130%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    padding: 44px 48px;
+  }
+  .article-body :global(h2) {
+    font-family: var(--font-serif);
+    font-size: 24px;
+    margin: 36px 0 16px;
+    color: var(--ink);
+  }
+  .article-body :global(h3) {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    margin: 28px 0 12px;
+    color: var(--ink);
+  }
+  .article-body :global(p) { margin: 16px 0; }
+  .article-body :global(a) { color: var(--terracotta); text-decoration: underline; text-underline-offset: 4px; }
+  .article-body :global(img) { border-radius: 16px; margin: 24px 0; }
+  .article-body :global(blockquote) {
+    border-left: 3px solid var(--gold);
+    background: rgba(255, 255, 255, 0.5);
+    padding: 16px 22px;
+    margin: 20px 0;
+    border-radius: 0 12px 12px 0;
+    color: var(--ink-soft);
+  }
+  .article-body :global(ul), .article-body :global(ol) { padding-left: 24px; margin: 16px 0; }
+  .article-body :global(code) {
+    background: rgba(255,255,255,0.7);
+    border-radius: 6px;
+    padding: 2px 7px;
+    font-size: 0.9em;
+  }
+  .article-body :global(pre) {
+    background: #2b2118;
+    color: #f6efe3;
+    border-radius: 14px;
+    padding: 20px 24px;
+    overflow-x: auto;
+    margin: 20px 0;
+  }
+  .article-body :global(pre code) { background: none; padding: 0; }
+
+  .article-foot { margin-top: 40px; text-align: center; }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 24px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-family: var(--font-sans);
+    transition: transform 0.25s;
+  }
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.7);
+    color: var(--ink);
+  }
+  .btn-ghost:hover { transform: translateY(-2px); }
+
+  @media (max-width: 640px) {
+    .article-body { padding: 28px 22px; }
+  }
+</style>

@@ -1,0 +1,92 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GlassNav from '../components/GlassNav.astro';
+import Footer from '../components/Footer.astro';
+
+const avatarImage = "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Impressionist%20oil%20painting%20portrait%20of%20a%20young%20writer%20with%20a%20warm%20gentle%20smile%2C%20soft%20window%20light%2C%20painterly%20brushstrokes%2C%20warm%20earth%20tones%2C%20artistic%20portrait&image_size=square";
+---
+
+<BaseLayout title="关于" description="关于这个博客">
+  <GlassNav />
+  <main style="padding-top:140px;">
+    <section>
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="tag">About Me</div>
+          <h2>关于我</h2>
+          <div class="line"></div>
+        </div>
+
+        <div class="about-card">
+          <img class="avatar" src={avatarImage} alt="我的画像" />
+          <div class="info">
+            <h3>你好，我是一名 AI 开发爱好者</h3>
+            <div class="role">大学生 · AI 开发者 · 终身学习者</div>
+            <p>我是喜欢折腾 AI 开发的大学生。课余时间研究大模型应用、Prompt 工程和各种有趣的 Agent，把每一次实验和心得都记录下来。</p>
+            <p>这个博客是我的"开发实验记录"——不追求流量，只求每一篇都真实记录自己的学习与思考。</p>
+            <div class="chips">
+              <span class="chip">AI 学习笔记</span>
+              <span class="chip">大模型实践</span>
+              <span class="chip">开源项目</span>
+              <span class="chip">校园生活</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  section { padding: 24px 0 96px; }
+  .about-card {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 48px;
+    align-items: center;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(14px) saturate(130%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+  }
+  .avatar {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 24px;
+    border: 6px solid rgba(255, 255, 255, 0.7);
+    box-shadow: var(--shadow);
+  }
+  .info h3 {
+    font-family: var(--font-serif);
+    font-size: 28px;
+    margin-bottom: 8px;
+  }
+  .info .role {
+    color: var(--terracotta);
+    letter-spacing: 2px;
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+  .info p { font-size: 15px; line-height: 2; color: var(--ink-soft); margin-bottom: 14px; }
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .chip {
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255,255,255,0.7);
+    font-size: 13px;
+    color: var(--ink-soft);
+    backdrop-filter: blur(8px);
+  }
+
+  @media (max-width: 760px) {
+    .about-card { grid-template-columns: 1fr; padding: 28px 22px; }
+    .avatar { max-width: 300px; margin: 0 auto; }
+  }
+</style>

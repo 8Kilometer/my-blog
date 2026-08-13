@@ -1,0 +1,68 @@
+---
+const links = [
+  { href: '/', label: '首页' },
+  { href: '/blog', label: '文章' },
+  { href: '/about', label: '关于' },
+];
+---
+
+<header class="nav-wrap">
+  <nav class="nav">
+    <a class="brand" href="/">Escape<span>World</span></a>
+    <div class="nav-links">
+      {links.map((l) => (
+        <a href={l.href} class="link">{l.label}</a>
+      ))}
+    </div>
+  </nav>
+</header>
+
+<style>
+  .nav-wrap {
+    position: fixed;
+    top: 18px; left: 0; right: 0;
+    z-index: 50;
+    padding: 0 28px;
+  }
+  .nav {
+    position: relative;
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 22px;
+    border-radius: 999px; /* 胶囊形 */
+    background: var(--glass);
+    backdrop-filter: blur(18px) saturate(150%);
+    -webkit-backdrop-filter: blur(18px) saturate(150%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 14px 34px rgba(70, 48, 20, 0.12);
+    animation: dropIn 0.9s ease both;
+  }
+  @keyframes dropIn {
+    from { opacity: 0; transform: translateY(-18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .brand {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--ink);
+  }
+  .brand span { color: var(--terracotta); }
+  .nav-links { display: flex; gap: 26px; align-items: center; }
+  .nav-links .link {
+    color: var(--ink-soft);
+    font-size: 14px;
+    letter-spacing: 1px;
+    transition: color 0.25s;
+  }
+  .nav-links .link:hover { color: var(--accent-deep); }
+
+  @media (max-width: 640px) {
+    .nav-links .link { display: none; }
+    .nav-wrap { padding: 0 16px; }
+  }
+</style>

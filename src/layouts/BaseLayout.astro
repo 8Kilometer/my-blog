@@ -1,0 +1,27 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import CapybaraPlayer from '../components/CapybaraPlayer.astro';
+
+export interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} · 油画记事</title>
+  <meta name="description" content={description || '记录 AI 开发路上的每一步'} />
+</head>
+<body>
+  <ClientRouter />
+  <slot />
+  <CapybaraPlayer />
+</body>
+</html>

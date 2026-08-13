@@ -1,0 +1,329 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GlassNav from '../components/GlassNav.astro';
+import PostCard from '../components/PostCard.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog'))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const recent = posts.slice(0, 3);
+
+const heroImage = "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Impressionist%20oil%20painting%20of%20a%20calm%20pale%20blue%20sea%20under%20a%20soft%20light%20blue%20sky%20with%20gentle%20white%20clouds%2C%20light%20azure%20and%20pale%20sky-blue%20tones%2C%20airy%20serene%20atmosphere%2C%20thick%20brushstrokes%2C%20canvas%20texture%2C%20minimalist%20oil%20painting&image_size=landscape_16_9";
+
+const avatarImage = "https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=Impressionist%20oil%20painting%20portrait%20of%20a%20young%20writer%20with%20a%20warm%20gentle%20smile%2C%20soft%20window%20light%2C%20painterly%20brushstrokes%2C%20warm%20earth%20tones%2C%20artistic%20portrait&image_size=square";
+---
+
+<BaseLayout title="首页" description="记录 AI 开发路上的每一步">
+  <GlassNav />
+
+  <main class="snap">
+    <!-- ===== 屏 1 · Hero（全屏背景 + 居中文字） ===== -->
+    <section class="panel panel--hero" id="p1">
+      <img class="hero-bg" src={heroImage} alt="油画风景背景" />
+      <div class="panel-inner">
+        <span class="kicker">AI DEV JOURNAL</span>
+        <h1>把想法，<em>写</em>成代码</h1>
+        <p class="lead">一名大学生的 AI 开发日志。<br />记录从灵感到实现、从踩坑到成长的全过程。</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="/blog">开始阅读</a>
+          <a class="btn btn-ghost" href="/about">认识我</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 屏 2 · 最近文章 ===== -->
+    <section class="panel" id="p2">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="tag">Recent Strokes</div>
+          <h2>最近的笔触</h2>
+          <div class="line"></div>
+        </div>
+        <div class="grid grid--3">
+          {recent.map((post) => (
+            <PostCard
+              title={post.data.title}
+              pubDate={post.data.pubDate}
+              description={post.data.description}
+              category={post.data.category}
+              coverImage={post.data.coverImage}
+              href={`/blog/${post.slug}/`}
+            />
+          ))}
+        </div>
+        <div class="sec-more">
+          <a class="btn btn-primary" href="/blog">查看全部文章</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== 屏 3 · 关于我 ===== -->
+    <section class="panel" id="p3">
+      <div class="wrap">
+        <div class="sec-head">
+          <div class="tag">About Me</div>
+          <h2>关于我</h2>
+          <div class="line"></div>
+        </div>
+        <div class="about-card">
+          <img class="avatar" src={avatarImage} alt="我的画像" />
+          <div class="info">
+            <h3>你好，我是一名 AI 开发爱好者</h3>
+            <div class="role">大学生 · AI 开发者 · 终身学习者</div>
+            <p>我是喜欢折腾 AI 开发的大学生。课余时间研究大模型应用、Prompt 工程和各种有趣的 Agent，把每一次实验和心得都记录下来。</p>
+            <div class="chips">
+              <span class="chip">AI 学习笔记</span>
+              <span class="chip">大模型实践</span>
+              <span class="chip">开源项目</span>
+              <span class="chip">校园生活</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 右侧滚动指示圆点 -->
+  <nav class="dots" aria-label="页面导航">
+    <a href="#p1" class="dot active" data-target="p1" aria-label="前往：Hero"></a>
+    <a href="#p2" class="dot" data-target="p2" aria-label="前往：最近文章"></a>
+    <a href="#p3" class="dot" data-target="p3" aria-label="前往：关于我"></a>
+  </nav>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  /* ===== 全屏滚动容器 ===== */
+  .snap {
+    height: 100svh;
+    overflow-y: auto;
+    scroll-snap-type: y mandatory;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+  }
+  .snap::-webkit-scrollbar { display: none; }
+
+  /* ===== 每一屏 ===== */
+  .panel {
+    min-height: 100svh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 96px 0;
+  }
+
+  /* 屏 1：全屏背景图 */
+  .panel--hero { padding: 0; overflow: hidden; }
+  .hero-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: saturate(1.02) brightness(0.92);
+    animation: kenburns 22s ease-in-out infinite alternate;
+  }
+  @keyframes kenburns {
+    from { transform: scale(1.02); }
+    to   { transform: scale(1.14); }
+  }
+  .panel--hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg,
+      rgba(15, 32, 68, 0.30) 0%,
+      rgba(15, 32, 68, 0.12) 45%,
+      rgba(246, 249, 255, 0.92) 100%);
+  }
+
+  /* ===== 居中内容 ===== */
+  .panel-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 28px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .kicker {
+    display: inline-flex;
+    font-size: 13px;
+    letter-spacing: 3px;
+    color: #f4f8ff;
+    background: rgba(41, 98, 235, 0.9);
+    padding: 7px 16px;
+    border-radius: 999px;
+    margin-bottom: 22px;
+    animation: riseIn 0.9s 0.1s ease both;
+  }
+  .panel--hero h1 {
+    font-family: var(--font-serif);
+    font-size: clamp(38px, 6vw, 68px);
+    line-height: 1.2;
+    color: #12203f;
+    margin-bottom: 18px;
+    animation: riseIn 0.9s 0.25s ease both;
+  }
+  .panel--hero h1 em { font-style: normal; color: var(--accent-deep); }
+  .panel--hero .lead {
+    font-size: 17px;
+    line-height: 2;
+    color: rgba(18, 32, 63, 0.82);
+    animation: riseIn 0.9s 0.4s ease both;
+  }
+  @keyframes riseIn {
+    from { opacity: 0; transform: translateY(36px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .cta {
+    margin-top: 34px;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: riseIn 0.9s 0.55s ease both;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 13px 28px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-family: var(--font-sans);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .btn-primary {
+    background: var(--accent-deep);
+    color: #f4f8ff;
+    box-shadow: 0 12px 26px rgba(41, 98, 235, 0.35);
+  }
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    color: var(--ink);
+  }
+  .btn:hover { transform: translateY(-3px); }
+  .btn-primary:hover { box-shadow: 0 16px 32px rgba(41, 98, 235, 0.45); }
+
+  /* ===== 屏 2 / 3 ===== */
+  .grid--3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+  }
+  .sec-more { text-align: center; margin-top: 44px; }
+
+  .about-card {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: 40px;
+    align-items: center;
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 44px;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(14px) saturate(130%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+    text-align: left;
+  }
+  .avatar {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 24px;
+    border: 6px solid rgba(255, 255, 255, 0.7);
+    box-shadow: var(--shadow);
+  }
+  .info h3 {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    margin-bottom: 8px;
+  }
+  .info .role {
+    color: var(--accent-deep);
+    letter-spacing: 2px;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+  .info p { font-size: 15px; line-height: 2; color: var(--ink-soft); }
+  .chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .chip {
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255,255,255,0.7);
+    font-size: 13px;
+    color: var(--ink-soft);
+    backdrop-filter: blur(8px);
+  }
+
+  /* ===== 右侧滚动指示圆点 ===== */
+  .dots {
+    position: fixed;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 40;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: rgba(41, 98, 235, 0.25);
+    border: 2px solid rgba(41, 98, 235, 0.55);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .dot:hover { transform: scale(1.25); }
+  .dot.active {
+    background: var(--accent-deep);
+    border-color: var(--accent-deep);
+    transform: scale(1.3);
+  }
+
+  @media (max-width: 920px) {
+    .grid--3 { grid-template-columns: repeat(2, 1fr); }
+    .about-card { grid-template-columns: 1fr; text-align: center; }
+    .avatar { max-width: 260px; margin: 0 auto; }
+    .chips { justify-content: center; }
+  }
+  @media (max-width: 640px) {
+    .grid--3 { grid-template-columns: 1fr; }
+    .dots { right: 14px; }
+  }
+</style>
+
+<script>
+  // 滚动指示圆点：高亮当前屏
+  const main = document.querySelector('.snap');
+  const dots = document.querySelectorAll('.dots .dot');
+  const panels = document.querySelectorAll('.panel');
+
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (e.isIntersecting) {
+        dots.forEach((d) => d.classList.toggle('active', d.dataset.target === e.target.id));
+      }
+    });
+  }, { root: main, threshold: 0.6 });
+
+  panels.forEach((p) => io.observe(p));
+</script>
